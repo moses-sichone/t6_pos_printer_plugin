@@ -1,0 +1,66 @@
+group = "com.example.t6_pos_printer_plugin"
+version = "1.0-SNAPSHOT"
+
+buildscript {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+    }
+
+    dependencies {
+        // Android Gradle Plugin for building the library
+        classpath("com.android.tools.build:gradle:7.3.0")
+    }
+}
+
+allprojects {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+    }
+}
+
+// Apply the Android Library plugin
+apply plugin: "com.android.library"
+// Remove the Kotlin plugin if not using Kotlin anymore
+// apply plugin: "kotlin-android"
+
+android {
+    compileSdkVersion 34
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 34
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    dependencies {
+        // Use flatDir to add .jar files from the 'libs' folder
+        implementation('com.github.mhiew:android-pdf-viewer:3.2.0-beta.1')
+        implementation fileTree(dir: 'libs', include: ['*.jar'])  // Add all .jar files from 'libs' folder
+        implementation files('libs/T1_V2_20220219.jar')  // Add specific .jar file (optional)
+
+        // Test dependencies (e.g., mockito)
+        testImplementation("org.mockito:mockito-core:5.0.0")
+    }
+
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+
+            testLogging {
+                events "passed", "skipped", "failed", "standardOut", "standardError"
+                outputs.upToDateWhen { false }
+                showStandardStreams = true
+            }
+        }
+    }
+}
